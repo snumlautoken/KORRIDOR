@@ -11,6 +11,10 @@ void Shader::loadUniform(std::string loc, glm::vec3 u) {
     glUniform3fv(glGetUniformLocation(shaderProgram, loc.c_str()), 1, &u[0]);
 }
 
+void Shader::loadUniform(std::string loc, int u) {
+        glUniform1i(glGetUniformLocation(shaderProgram, loc.c_str()), 0);
+}
+
 Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
     std::stringstream ss{ };
     std::string vertexShaderSource{ };

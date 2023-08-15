@@ -9,5 +9,13 @@ find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 
 set(CMAKE_BUILD_TYPE Debug)
-add_executable (KORRIDOR src/main.cpp src/graphics.cpp src/prism.cpp src/shader.cpp src/input.cpp)
+add_executable (
+    KORRIDOR 
+    src/main.cpp 
+    src/graphics.cpp 
+    src/prism.cpp 
+    src/skybox.cpp 
+    src/shader.cpp 
+    src/input.cpp
+    )
 target_link_libraries(KORRIDOR glfw OpenGL GLEW)
