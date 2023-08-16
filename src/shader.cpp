@@ -7,6 +7,10 @@ void Shader::loadUniform(std::string loc, glm::mat4 u) {
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, loc.c_str()), 1, GL_FALSE, &u[0][0]);
 }
 
+void Shader::loadUniform(std::string loc, glm::mat3 u) {
+    glUniformMatrix3fv(glGetUniformLocation(shaderProgram, loc.c_str()), 1, GL_FALSE, &u[0][0]);
+}
+
 void Shader::loadUniform(std::string loc, glm::vec3 u) {
     glUniform3fv(glGetUniformLocation(shaderProgram, loc.c_str()), 1, &u[0]);
 }

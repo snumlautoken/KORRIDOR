@@ -58,7 +58,8 @@ void Graphics::render() {
 
     renderers[0]->shaderProgram.use();
     renderers[0]->shaderProgram.loadUniform("view", view);
-    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,-0.5,0.0),45,glm::vec3(0.0,1.0,0.0),glm::vec3(100.0, 1.0, 100.0)));
+    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,-0.5,0.0),45,glm::vec3(0.0,1.0,0.0),glm::vec3(10.0, 1.0, 10.0)));
+    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,1,0.0),45,glm::vec3(1.0,1.0,0.0),glm::vec3(1.0, 1.0, 1.0)));
 
     view = glm::mat4(glm::mat3(view));
 

@@ -12,6 +12,7 @@ public:
     Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     void use();
     void loadUniform(std::string loc, glm::mat4 u);
+    void loadUniform(std::string loc, glm::mat3 u);
     void loadUniform(std::string loc, glm::vec3 u);
     void loadUniform(std::string loc, int u);
 private:

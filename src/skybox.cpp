@@ -1,7 +1,5 @@
 #include "skybox.hpp"
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
-#include <iostream>
 
 
 SkyboxRenderer::SkyboxRenderer(Shader program) : Renderer(program) {
@@ -49,7 +47,7 @@ GLuint SkyboxRenderer::loadCubemap(std::string dir) {
     data = stbi_load((dir + "/up.png").c_str(), &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
-    data = stbi_load((dir + "/bottom.png").c_str(), &width, &height, &nrChannels, 0);
+    data = stbi_load((dir + "/down.png").c_str(), &width, &height, &nrChannels, 0);
     glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
     data = stbi_load((dir + "/front.png").c_str(), &width, &height, &nrChannels, 0);
