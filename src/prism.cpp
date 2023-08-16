@@ -93,8 +93,6 @@ const float normals[3*36] = {
     0,1,0
 };
 
-// PHASE DETERMINATION BY NORMALS
-
 PrismRenderer::PrismRenderer(Shader program) : Renderer(program) {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
@@ -140,7 +138,7 @@ GLuint PrismRenderer::loadTex(std::string dir) {
     int width, height, nrChannels;
 
     u_char* data = stbi_load(dir.c_str(), &width, &height, &nrChannels, 0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
 
     glGenerateMipmap(GL_TEXTURE_2D);

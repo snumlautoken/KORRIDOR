@@ -12,12 +12,12 @@ uniform mat3 scale;
 mat3x2 pos2tex(vec3 normal) {
     mat2x3 ret = mat2x3(1);
     if (abs(normal.x) == 1) {
-        ret[0] = vec3(0,normal.x,0);
-        ret[1] = vec3(0,0,normal.x);
+        ret[0] = vec3(0,1,0);
+        ret[1] = vec3(0,0,1);
         return transpose(ret);
     } else if (abs(normal.y) == 1) {
-        ret[0] = vec3(normal.y,0,0);
-        ret[1] = vec3(0,0,normal.y);
+        ret[0] = vec3(1,0,0);
+        ret[1] = vec3(0,0,1);
         return transpose(ret);
     }
     return transpose(ret);
@@ -25,5 +25,7 @@ mat3x2 pos2tex(vec3 normal) {
 
 void main() {
     gl_Position = projection * view * model * vec4(position, 1.0);
-    TexCoords = pos2tex(norm) * (scale * position);
+    mat4x3 transfer = mat4x3(1);
+    transfer[3] = vec3(0.5,0.5,0.5);
+    TexCoords = pos2tex(norm) * scale * transfer * vec4(position, 1.0);
 }
