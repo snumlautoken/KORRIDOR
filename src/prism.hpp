@@ -1,5 +1,6 @@
-#include "renderer.hpp"
 #include "texture.hpp"
+#include "entity.hpp"
+#include "shader.hpp"
 
 class Prism : public Entity {
 public:
@@ -7,8 +8,13 @@ public:
     glm::mat4 model() override;
 };
 
-class PrismRenderer : public Renderer {
+class PrismRenderer {
 public:
     PrismRenderer(Shader program);
-    void render(std::unique_ptr<Entity> e) override;
+    void render(Prism prism);
+    Shader shaderProgram;
+private:
+    GLuint vao;
+    GLuint vbo;
+    GLuint ebo;
 };

@@ -89,7 +89,7 @@ const float normals[3*36] = {
     0,1,0
 };
 
-PrismRenderer::PrismRenderer(Shader program) : Renderer(program) {
+PrismRenderer::PrismRenderer(Shader program) : shaderProgram(program) {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glBindVertexArray(vao);
@@ -106,20 +106,15 @@ PrismRenderer::PrismRenderer(Shader program) : Renderer(program) {
     shaderProgram.loadUniform("tex", 0);
 }
 
-void PrismRenderer::render(std::unique_ptr<Entity> e) {
+void PrismRenderer::render(Prism p) {
     glm::mat4 scale = glm::mat4(1.0f);
-    scale = glm::scale(scale, e->scale);
-    shaderProgram.loadUniform("model", e->model());
+    scale = glm::scale(scale, p.scale);
+    shaderProgram.loadUniform("model", p.model());
     shaderProgram.loadUniform("scale", glm::mat3(scale));
-    glBindTexture(GL_TEXTURE_2D, e->tex);
+    glBindTexture(GL_TEXTURE_2D, p.tex);
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
-}
-
-
-glm::mat2x3 ver2tex(std::unique_ptr<Entity> e) {
-    return glm::mat2x3(1);
 }
 
 Prism::Prism(glm::vec3 p, float r, glm::vec3 a, glm::vec3 d, Texture texture) {

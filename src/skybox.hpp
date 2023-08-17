@@ -1,15 +1,28 @@
-#include "renderer.hpp"
+#include "shader.hpp"
+#include <GL/glew.h>
+#include <GL/gl.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
-class SkyboxRenderer : public Renderer {
+class Skybox {
+public:
+    Skybox(std::string dir);
+    GLuint skyboxTex;
+};
+
+class SkyboxRenderer {
 public:
     SkyboxRenderer(Shader program);
-    void render(std::unique_ptr<Entity> e) override;
+    void render(Skybox);
+    Shader shaderProgram;
 private:
     void generateCube(float sideLen);
     GLuint loadCubemap(std::string dir);
     std::vector<float> vertices;
     std::vector<uint> indices;
-
-    GLuint skyboxTex;
+    GLuint vao;
+    GLuint vbo;
+    GLuint ebo;
 };

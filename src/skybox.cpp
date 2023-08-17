@@ -5,7 +5,7 @@
 #include <stb/stb_image.h>
 
 
-SkyboxRenderer::SkyboxRenderer(Shader program) : Renderer(program) {
+SkyboxRenderer::SkyboxRenderer(Shader program) : shaderProgram(program) {
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
     glGenBuffers(1, &ebo);
@@ -19,23 +19,31 @@ SkyboxRenderer::SkyboxRenderer(Shader program) : Renderer(program) {
     glEnableVertexAttribArray(0);
 
     program.use();
-    skyboxTex = loadCubemap("resources/skybox");
     shaderProgram.loadUniform("skybox", 0);
 }
 
-void SkyboxRenderer::render(std::unique_ptr<Entity> e) {
+void SkyboxRenderer::render(Skybox s) {
     glDepthFunc(GL_LEQUAL);
     glBindVertexArray(vao);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skyboxTex);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, s.skyboxTex);
     glDrawElements(GL_TRIANGLES,36,GL_UNSIGNED_INT,0);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS);
 }
 
+void SkyboxRenderer::generateCube(float sideLen) {
+    float halfSide = sideLen/2;
+    vertices.clear();
+    for (float i = -halfSide; i <= halfSide; i += sideLen)
+        for (float j = -halfSide; j <= halfSide; j += sideLen)
+            for (float k = -halfSide; k <= halfSide; k += sideLen)
+                vertices.insert(vertices.end(), {i,j,k});
+    indices.clear();
+    indices.insert(indices.end(), {0,1,2,0,2,4,1,2,3,1,3,5,3,5,7,2,4,6,4,5,6,5,6,7,2,3,6,3,6,7,0,1,4,1,4,5});
+}
 
-
-GLuint SkyboxRenderer::loadCubemap(std::string dir) {
+Skybox::Skybox(std::string dir) {
     GLuint textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -66,16 +74,6 @@ GLuint SkyboxRenderer::loadCubemap(std::string dir) {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    return textureID;
+    skyboxTex = textureID;
 }
 
-void SkyboxRenderer::generateCube(float sideLen) {
-    float halfSide = sideLen/2;
-    vertices.clear();
-    for (float i = -halfSide; i <= halfSide; i += sideLen)
-        for (float j = -halfSide; j <= halfSide; j += sideLen)
-            for (float k = -halfSide; k <= halfSide; k += sideLen)
-                vertices.insert(vertices.end(), {i,j,k});
-    indices.clear();
-    indices.insert(indices.end(), {0,1,2,0,2,4,1,2,3,1,3,5,3,5,7,2,4,6,4,5,6,5,6,7,2,3,6,3,6,7,0,1,4,1,4,5});
-}

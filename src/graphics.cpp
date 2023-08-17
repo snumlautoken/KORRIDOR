@@ -1,15 +1,9 @@
 #include "graphics.hpp"
-#include "prism.hpp"
-#include "skybox.hpp"
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <iostream>
 #include <filesystem>
-
-void printError() {
-    std::cout << glGetError() << std::endl;
-}
 
 Graphics::Graphics(int width, int height) {
     glfwInit();
@@ -38,13 +32,13 @@ Graphics::Graphics(int width, int height) {
     projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 1000.0f);
 
     Shader program("shaders/object.vs", "shaders/object.fs");
-    renderers.push_back(std::make_unique<PrismRenderer>(program));
+    pr = std::make_unique<PrismRenderer>(program);
 
     program.use();
     program.loadUniform("projection", projection);
     
     Shader sbprogram("shaders/skybox.vs", "shaders/skybox.fs");
-    renderers.push_back(std::make_unique<SkyboxRenderer>(sbprogram));
+    sr = std::make_unique<SkyboxRenderer>(sbprogram);
     sbprogram.use();
     sbprogram.loadUniform("projection", projection);
 
@@ -52,23 +46,26 @@ Graphics::Graphics(int width, int height) {
     textures.push_back(Texture("resources/textures/tile.jpg"));
 }
 
+void Graphics::draw(std::vector<Prism> prisms) {
+    pr->shaderProgram.use();
+    pr->shaderProgram.loadUniform("view", input->getView());
+    for (auto prism : prisms) {
+        pr->render(prism);
+    }
+}
+void Graphics::draw(Skybox skybox) {
+    sr->shaderProgram.use();
+    glm::mat4 view = input->getView();
+    view = glm::mat4(glm::mat3(view));
+    sr->shaderProgram.loadUniform("view", view);
+    sr->render(skybox);
+}
+
+
 void Graphics::render() {
+    glfwSwapBuffers(window);
+
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     input->pollEvents();
-    glm::mat4 view;
-    view = input->getView();
-
-    renderers[0]->shaderProgram.use();
-    renderers[0]->shaderProgram.loadUniform("view", view);
-    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,-0.05,0.0),45,glm::vec3(0.0,1.0,0.0),glm::vec3(10.0, 0.1, 10.0), textures[0]));
-    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,1,0.0),45,glm::vec3(1.0,1.0,0.0),glm::vec3(1.0, 1.0, 1.0), textures[1]));
-
-    view = glm::mat4(glm::mat3(view));
-
-    renderers[1]->shaderProgram.use();
-    renderers[1]->shaderProgram.loadUniform("view", view);
-    renderers[1]->render(nullptr);
-
-    glfwSwapBuffers(window);
 }
