@@ -5,6 +5,7 @@
 #include <memory>
 #include "renderer.hpp"
 #include "input.hpp"
+#include "texture.hpp"
 
 class Graphics {
 public:
@@ -15,4 +16,5 @@ public:
     std::unique_ptr<Input> input;
 private:
     std::vector<std::unique_ptr<Renderer>> renderers;
+    std::vector<Texture> textures;
 };

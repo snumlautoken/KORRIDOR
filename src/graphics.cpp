@@ -47,6 +47,9 @@ Graphics::Graphics(int width, int height) {
     renderers.push_back(std::make_unique<SkyboxRenderer>(sbprogram));
     sbprogram.use();
     sbprogram.loadUniform("projection", projection);
+
+    textures.push_back(Texture("resources/textures/grass.png"));
+    textures.push_back(Texture("resources/textures/tile.jpg"));
 }
 
 void Graphics::render() {
@@ -58,8 +61,8 @@ void Graphics::render() {
 
     renderers[0]->shaderProgram.use();
     renderers[0]->shaderProgram.loadUniform("view", view);
-    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,-0.5,0.0),45,glm::vec3(0.0,1.0,0.0),glm::vec3(10.0, 1.0, 10.0)));
-    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,1,0.0),45,glm::vec3(1.0,1.0,0.0),glm::vec3(1.0, 1.0, 1.0)));
+    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,-0.05,0.0),45,glm::vec3(0.0,1.0,0.0),glm::vec3(10.0, 0.1, 10.0), textures[0]));
+    renderers[0]->render(std::make_unique<Prism>(glm::vec3(0.0,1,0.0),45,glm::vec3(1.0,1.0,0.0),glm::vec3(1.0, 1.0, 1.0), textures[1]));
 
     view = glm::mat4(glm::mat3(view));
 

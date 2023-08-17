@@ -17,5 +17,6 @@ add_executable (
     src/skybox.cpp 
     src/shader.cpp 
     src/input.cpp
+    src/texture.cpp
     )
 target_link_libraries(KORRIDOR glfw OpenGL GLEW)
