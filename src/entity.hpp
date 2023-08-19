@@ -4,7 +4,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 struct AABB {
-    glm::vec3 o,l,r,u;
+    float minX, maxX;
+    float mixY, maxY;
+    float minZ, maxZ;
 };
 
 class Entity {
@@ -13,8 +15,8 @@ public:
     glm::vec3 scale;
     GLuint tex;
     AABB box;
+    float rot;
 protected:
     glm::vec3 pos;
     glm::vec3 axis;
-    float rot;
 };

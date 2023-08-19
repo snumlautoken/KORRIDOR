@@ -1,9 +1,10 @@
 #pragma once
+#include <string>
 #include <GL/glew.h>
 #include <GL/gl.h>
 
 class Texture {
 public:
-    Texture(const char* file);
+    Texture(std::string file);
     GLuint tex;
 };

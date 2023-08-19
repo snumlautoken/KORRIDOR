@@ -107,10 +107,13 @@ PrismRenderer::PrismRenderer(Shader program) : shaderProgram(program) {
 }
 
 void PrismRenderer::render(Prism p) {
+    glm::mat4 model = p.model();
     glm::mat4 scale = glm::mat4(1.0f);
     scale = glm::scale(scale, p.scale);
-    shaderProgram.loadUniform("model", p.model());
+    glm::mat3 invModel = glm::mat3(glm::transpose(glm::inverse(model)));
+    shaderProgram.loadUniform("model", model);
     shaderProgram.loadUniform("scale", glm::mat3(scale));
+    shaderProgram.loadUniform("invModel", invModel);
     glBindTexture(GL_TEXTURE_2D, p.tex);
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);

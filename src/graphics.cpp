@@ -36,14 +36,16 @@ Graphics::Graphics(int width, int height) {
 
     program.use();
     program.loadUniform("projection", projection);
+    program.loadUniform("lightDir", glm::vec3(1,-1,1));
     
     Shader sbprogram("shaders/skybox.vs", "shaders/skybox.fs");
     sr = std::make_unique<SkyboxRenderer>(sbprogram);
     sbprogram.use();
     sbprogram.loadUniform("projection", projection);
+}
 
-    textures.push_back(Texture("resources/textures/grass.png"));
-    textures.push_back(Texture("resources/textures/tile.jpg"));
+void Graphics::loadTex(std::string file) {
+    textures.push_back(Texture(std::string("resources/textures/" + file)));
 }
 
 void Graphics::draw(std::vector<Prism> prisms) {

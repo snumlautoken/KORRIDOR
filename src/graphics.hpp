@@ -14,6 +14,7 @@ public:
     void render();
     void draw(std::vector<Prism> prisms);
     void draw(Skybox skybox);
+    void loadTex(std::string file);
     GLFWwindow* window;
     std::unique_ptr<Input> input;
     std::vector<Texture> textures;

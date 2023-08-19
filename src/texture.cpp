@@ -1,13 +1,13 @@
 #include "texture.hpp"
 #include <stb/stb_image.h>
 
-Texture::Texture(const char* file) {
+Texture::Texture(std::string file) {
     GLuint textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
     int width, height, nrChannels;
 
-    u_char* data = stbi_load(file, &width, &height, &nrChannels, 0);
+    u_char* data = stbi_load(file.c_str(), &width, &height, &nrChannels, 0);
     GLenum format = nrChannels > 3 ? GL_RGBA : GL_RGB;
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
     stbi_image_free(data);
