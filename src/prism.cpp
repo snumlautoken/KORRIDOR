@@ -107,14 +107,13 @@ PrismRenderer::PrismRenderer(Shader program) : shaderProgram(program) {
 }
 
 void PrismRenderer::render(Prism p) {
-    glm::mat4 model = p.model();
-    glm::mat4 scale = glm::mat4(1.0f);
-    scale = glm::scale(scale, p.scale);
+    glm::mat4 model = p.getModel();
+    glm::mat4 scale = p.scaleTex ? glm::scale(glm::mat4(1.0f), p.getScale()) : glm::mat4(1.0f);
     glm::mat3 invModel = glm::mat3(glm::transpose(glm::inverse(model)));
     shaderProgram.loadUniform("model", model);
     shaderProgram.loadUniform("scale", glm::mat3(scale));
     shaderProgram.loadUniform("invModel", invModel);
-    glBindTexture(GL_TEXTURE_2D, p.tex);
+    glBindTexture(GL_TEXTURE_2D, p.getTex());
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
@@ -126,13 +125,59 @@ Prism::Prism(glm::vec3 p, float r, glm::vec3 a, glm::vec3 d, Texture texture) {
     axis = a;
     scale = d;
     tex = texture.tex;
+
+    recalcModel();
 }
 
-glm::mat4 Prism::model() {
-    glm::mat4 model = glm::mat4(1.0f);
+glm::mat4 Prism::getModel() {
+    return model;
+}
+
+void Prism::recalcModel() {
+    model = glm::mat4(1.0f);
     model = glm::translate(model, pos);
     model = glm::rotate(model, glm::radians(rot), axis);
     model = glm::scale(model, scale);
 
-    return model;
+    recalcVertices();
+}
+
+const std::pair<glm::mat4,glm::mat4> defaultVert(   
+    glm::mat4(
+    glm::vec4(0.5,0.5,0.5,1),
+    glm::vec4(0.5,0.5,-0.5,1),
+    glm::vec4(0.5,-0.5,0.5,1),
+    glm::vec4(-0.5,0.5,0.5,1)),
+    glm::mat4(
+    glm::vec4(-0.5,-0.5,-0.5,1),
+    glm::vec4(-0.5,-0.5,0.5,1),
+    glm::vec4(-0.5,0.5,-0.5,1),
+    glm::vec4(0.5,-0.5,-0.5,1)));
+
+void Prism::recalcVertices() {
+    vert.first = model*defaultVert.first;
+    vert.second = model*defaultVert.second;
+}
+
+glm::vec3 Prism::support(glm::vec3 dir) {
+    float maxDot = 0;
+    glm::vec3 maxVec;
+    dir = glm::normalize(dir);
+    for (int i = 0; i < 4; i++) {
+        glm::vec3 col = glm::vec3(vert.first[i]);
+        float currDot = glm::dot(glm::normalize(col), dir);
+        if (maxDot < currDot) {
+            maxDot = currDot;
+            maxVec = col;
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        glm::vec3 col = glm::vec3(vert.second[i]);
+        float currDot = glm::dot(glm::normalize(col), dir);
+        if (maxDot < currDot) {
+            maxDot = currDot;
+            maxVec = col;
+        }
+    }
+    return maxVec;
 }
