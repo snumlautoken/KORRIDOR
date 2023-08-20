@@ -161,23 +161,23 @@ void Prism::recalcVertices() {
 
 glm::vec3 Prism::support(glm::vec3 dir) {
     float maxDot = 0;
-    glm::vec3 maxVec;
+    glm::vec3 maxCoord;
     dir = glm::normalize(dir);
     for (int i = 0; i < 4; i++) {
         glm::vec3 col = glm::vec3(vert.first[i]);
-        float currDot = glm::dot(glm::normalize(col), dir);
+        float currDot = glm::dot(col-pos, dir);
         if (maxDot < currDot) {
             maxDot = currDot;
-            maxVec = col;
+            maxCoord = col;
         }
     }
     for (int i = 0; i < 4; i++) {
         glm::vec3 col = glm::vec3(vert.second[i]);
-        float currDot = glm::dot(glm::normalize(col), dir);
+        float currDot = glm::dot(col-pos, dir);
         if (maxDot < currDot) {
             maxDot = currDot;
-            maxVec = col;
+            maxCoord = col;
         }
     }
-    return maxVec;
+    return maxCoord;
 }
