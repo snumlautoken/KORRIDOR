@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include <iostream>
 
 void createPillar(Scene& scene, glm::vec3 pos, float height, Texture tex) {
     scene.prisms.push_back(Prism(pos,0,glm::vec3(0,1,0),glm::vec3(0.5, 0.1, 0.5), tex));
@@ -34,12 +35,18 @@ int main() {
 
     Prism& cheese = scene.prisms[1];
 
+
     while(!glfwWindowShouldClose(graphics->window)) {
         double time = glfwGetTime();
         cheese.setRot(20 * time);
         glm::vec3 newPos = cheese.getPos();
-        newPos.y = 1.5+0.2*sin(time);
+        newPos.y = 1.5+sin(time);
         cheese.setPos(newPos);
+
+        if (cheese.checkCollision(scene.prisms[4])) {
+            std::cout << glfwGetTime() << std::endl;
+        }
+
         scene.render();
     }
     return 0;

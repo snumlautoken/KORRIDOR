@@ -7,7 +7,6 @@ public:
     Prism(glm::vec3 pos, float rot, glm::vec3 axis, glm::vec3 dim, Texture texture);
     glm::mat4 getModel();
 
-    glm::vec3 support(glm::vec3 dir) override;
     void setScale(glm::vec3 s) {scale = s; recalcModel();};
     void setTex(GLuint t) {tex = t; recalcModel();};
     void setRot(float r) {rot = r; recalcModel();};
@@ -16,6 +15,7 @@ public:
 
     bool scaleTex = true;
 private:
+    glm::vec3 support(glm::vec3 dir) override;
     void recalcModel();
     void recalcVertices();
     glm::mat4 model;

@@ -160,7 +160,7 @@ void Prism::recalcVertices() {
 }
 
 glm::vec3 Prism::support(glm::vec3 dir) {
-    float maxDot = 0;
+    float maxDot = -INFINITY;
     glm::vec3 maxCoord;
     dir = glm::normalize(dir);
     for (int i = 0; i < 4; i++) {
