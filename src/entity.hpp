@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <deque>
+#include <vector>
 #include <iostream>
 
 class Entity {
@@ -16,12 +17,12 @@ public:
     static bool checkCollision(Entity& e1, Entity& e2) {
         glm::vec3 axis = e1.getPos() - e2.getPos();
         glm::vec3 a = e1.support(axis) - e2.support(-axis);
-        std::deque<glm::vec3> simplex {a};
+        std::vector<glm::vec3> simplex {a};
         axis = -a;
 
-        while(true) {
+        while(glm::length(axis) != 0) {
             a = e1.support(axis) - e2.support(-axis);
-            if (glm::dot(a, axis) < 0) { return false; }
+            if (glm::dot(a, axis) <= 0) { return false; }
             simplex.push_back(a);
             auto res = nearestSimplex(simplex);
             if (res.first) { break; }
@@ -50,7 +51,11 @@ protected:
     glm::vec3 axis;
 
 private:
-    static std::pair<bool,glm::vec3> nearestSimplex(std::deque<glm::vec3>& s) {
+    static void printVec(glm::vec3& v) {
+        std::cout << "(" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl; 
+    }
+
+    static std::pair<bool,glm::vec3> nearestSimplex(std::vector<glm::vec3>& s) {
         if (s.size() == 2) { //Line case
             glm::vec3 ab = s.at(0) - s.at(1);
             glm::vec3 ao = -s.at(1);
@@ -97,9 +102,9 @@ private:
                 } else {
                     if (glm::dot(abc, ao) > 0) {
                         dir = abc;
+                        s = {b,c,a};
                     } else {
                         dir = -abc;
-                        s = {b,c,a};
                     }
                 }
             }
@@ -120,7 +125,46 @@ private:
             glm::vec3 acd = glm::cross(ac, ad);
             glm::vec3 dir;
 
-            return std::make_pair(true, ao);
+            std::vector<glm::vec3> outTriangles;
+            std::vector<glm::vec3> ver;
+
+            if (glm::dot(abc, ao) < 0) {
+                outTriangles.push_back(abc);
+                ver.insert(ver.end(), {b,c});
+            }
+            if (glm::dot(adb, ao) < 0) {
+                outTriangles.push_back(adb);
+                ver.insert(ver.end(), {d,b});
+            }
+            if (glm::dot(acd, ao) < 0) {
+                outTriangles.push_back(acd);
+                ver.insert(ver.end(), {c,d});
+            }
+
+            switch (outTriangles.size())
+            {
+            case 0:
+                return std::make_pair(true, ao);
+                break;
+            case 1:
+                dir = -outTriangles[0];
+                s = {ver[1],ver[0],a};
+                break;
+            case 2:
+                dir = glm::vec3(-0.5)*(outTriangles[0]+outTriangles[1]);
+                if (ver[1]==ver[2]) {
+                    s = {c,a};
+                } else {
+                    s = {ver[0],a};
+                }
+                break;
+            default:
+                dir = ao;
+                s = {a};
+                break;
+            }
+
+            return std::make_pair(false, dir);
         }
     }
 };

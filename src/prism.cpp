@@ -142,7 +142,7 @@ void Prism::recalcModel() {
     recalcVertices();
 }
 
-const std::pair<glm::mat4,glm::mat4> defaultVert(   
+static const std::pair<glm::mat4,glm::mat4> defaultVert(   
     glm::mat4(
     glm::vec4(0.5,0.5,0.5,1),
     glm::vec4(0.5,0.5,-0.5,1),

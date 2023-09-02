@@ -19,8 +19,14 @@ int main() {
     Scene scene(graphics);
 
     scene.prisms.push_back(Prism(glm::vec3(0.0,-0.05,0.0),45,glm::vec3(0.0,1.0,0.0),glm::vec3(100.0, 0.1, 100.0), graphics->textures[0]));
-    scene.prisms.push_back(Prism(glm::vec3(0.0,1.5,0.0),90,glm::vec3(1),glm::vec3(0.3), graphics->textures[2]));
+    scene.prisms.push_back(Prism(glm::vec3(9.555,1.5,10),0,glm::vec3(1),glm::vec3(0.3), graphics->textures[2]));
+    scene.prisms.push_back(Prism(glm::vec3(10.0,1.5,10.0),90,glm::vec3(1,1,0),glm::vec3(0.3,0.3,0.4), graphics->textures[2]));
+    scene.prisms.push_back(Prism(glm::vec3(9.52,1.799,10),0,glm::vec3(1),glm::vec3(0.3), graphics->textures[2]));
+    scene.prisms.push_back(Prism(glm::vec3(9.52,1.799,10.2),0,glm::vec3(1),glm::vec3(0.3), graphics->textures[2]));
     scene.prisms[1].scaleTex = false;
+    scene.prisms[2].scaleTex = false;
+    scene.prisms[3].scaleTex = false;
+    scene.prisms[4].scaleTex = false;
     createPillar(scene, glm::vec3(0),1,graphics->textures[1]);
 
     for (int i = 0; i < 20; i++) {
@@ -42,9 +48,16 @@ int main() {
         glm::vec3 newPos = cheese.getPos();
         newPos.y = 1.5+sin(time);
         cheese.setPos(newPos);
+        if (cheese.checkCollision(scene.prisms[2])) {
+            std::cout << "2: " << time << std::endl;
+        }
+
+        if (cheese.checkCollision(scene.prisms[3])) {
+            std::cout << "3: " << time << std::endl;
+        }
 
         if (cheese.checkCollision(scene.prisms[4])) {
-            std::cout << glfwGetTime() << std::endl;
+            std::cout << "4: " << time << std::endl;
         }
 
         scene.render();
