@@ -16,13 +16,14 @@ public:
 
     static bool checkCollision(Entity& e1, Entity& e2) {
         glm::vec3 axis = e1.getPos() - e2.getPos();
+        if (glm::length(axis) != 0) {return true;}
         glm::vec3 a = e1.support(axis) - e2.support(-axis);
         std::vector<glm::vec3> simplex {a};
         axis = -a;
 
         while(glm::length(axis) != 0) {
             a = e1.support(axis) - e2.support(-axis);
-            if (glm::dot(a, axis) <= 0) { return false; }
+            if (glm::dot(a, axis) < 0) { return false; }
             simplex.push_back(a);
             auto res = nearestSimplex(simplex);
             if (res.first) { break; }
@@ -60,7 +61,7 @@ private:
             glm::vec3 ab = s.at(0) - s.at(1);
             glm::vec3 ao = -s.at(1);
             glm::vec3 dir;
-            if (glm::dot(ab,ao) > 0) { dir = glm::cross(glm::cross(ab, ao), ab); } 
+            if (glm::dot(ab,ao) >= 0) { dir = glm::cross(glm::cross(ab, ao), ab); } 
             else { 
                 dir = ao;
                 s = {s.at(1)};
