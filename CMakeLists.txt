@@ -19,5 +19,6 @@ add_executable (
     src/input.cpp
     src/texture.cpp
     src/scene.cpp
+    src/player.cpp
     )
 target_link_libraries(KORRIDOR glfw OpenGL GLEW)

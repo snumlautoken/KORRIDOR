@@ -24,12 +24,12 @@ Graphics::Graphics(int width, int height) {
 
     glewInit();
 
-    input = std::make_unique<Input>(window);
+    input = std::make_shared<Input>(window);
     glEnable(GL_MULTISAMPLE);  
     glEnable(GL_DEPTH_TEST);
 
     glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 1000.0f);
+    projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.01f, 1000.0f);
 
     Shader program("shaders/object.vs", "shaders/object.fs");
     pr = std::make_unique<PrismRenderer>(program);

@@ -5,6 +5,7 @@
 #include <deque>
 #include <vector>
 #include <iostream>
+#include "texture.hpp"
 
 class Entity {
 public:
@@ -16,7 +17,7 @@ public:
 
     static bool checkCollision(Entity& e1, Entity& e2) {
         glm::vec3 axis = e1.getPos() - e2.getPos();
-        if (glm::length(axis) != 0) {return true;}
+        if (glm::length(axis) == 0) {return true;}
         glm::vec3 a = e1.support(axis) - e2.support(-axis);
         std::vector<glm::vec3> simplex {a};
         axis = -a;
@@ -52,7 +53,7 @@ protected:
     glm::vec3 axis;
 
 private:
-    static void printVec(glm::vec3& v) {
+    static void printVec(glm::vec3 v) {
         std::cout << "(" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl; 
     }
 

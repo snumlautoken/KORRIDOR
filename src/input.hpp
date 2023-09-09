@@ -1,3 +1,5 @@
+#pragma once
+
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <glm/glm.hpp>
@@ -8,6 +10,7 @@ public:
     Input(GLFWwindow* window);
     void pollEvents();
     glm::mat4 getView();
+    glm::vec3 getPos() {return pos;}
 private:
     void processKb(double dT);
     void processM(double dT);

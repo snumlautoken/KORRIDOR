@@ -1,4 +1,5 @@
 #include "graphics.hpp"
+#include "player.hpp"
 #include <vector>
 
 class Scene {

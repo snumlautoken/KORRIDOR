@@ -16,7 +16,7 @@ public:
     void draw(Skybox skybox);
     void loadTex(std::string file);
     GLFWwindow* window;
-    std::unique_ptr<Input> input;
+    std::shared_ptr<Input> input;
     std::vector<Texture> textures;
 private:
     std::unique_ptr<PrismRenderer> pr;
