@@ -7,6 +7,11 @@
 #include <iostream>
 #include "texture.hpp"
 
+struct collisionRes {
+    bool collision;
+    glm::vec3 penVec;
+};
+
 class Entity {
 public:
     glm::vec3 getScale() {return scale;};
@@ -15,34 +20,34 @@ public:
     glm::vec3 getPos() {return pos;};
     glm::vec3 getAxis() {return axis;};
 
-    static bool checkCollision(Entity& e1, Entity& e2) {
-        glm::vec3 axis = e1.getPos() - e2.getPos();
-        if (glm::length(axis) == 0) {return true;}
-        glm::vec3 a = e1.support(axis) - e2.support(-axis);
-        std::vector<glm::vec3> simplex {a};
-        axis = -a;
-
-        while(glm::length(axis) != 0) {
-            a = e1.support(axis) - e2.support(-axis);
-            if (glm::dot(a, axis) < 0) { return false; }
-            simplex.push_back(a);
-            auto res = nearestSimplex(simplex);
-            if (res.first) { break; }
-            axis = res.second;
-        }
-        return true;
-    }
-
-    bool checkCollision(Entity& e) {
-        return checkCollision(*this, e);
-    }
-
     void setScale(glm::vec3 s) {scale = s;};
     void setTex(GLuint t) {tex = t;};
     void setRot(float r) {rot = r;};
     void setPos(glm::vec3 p) {pos = p;};
     void setAxis(glm::vec3 a) {axis = a;};
 
+    static collisionRes checkCollision(Entity& e1, Entity& e2) {
+        glm::vec3 axis(1);
+        glm::vec3 a = e1.support(axis) - e2.support(-axis);
+        std::vector<glm::vec3> simplex {a};
+        axis = -a;
+        while (true) {
+            a = e1.support(axis) - e2.support(-axis);
+            if (glm::dot(a, axis) < 0) { return collisionRes(false,glm::vec3(0)); }
+            simplex.push_back(a);
+            auto res = nearestSimplex(simplex);
+            if (res.collision) { break; }
+            axis = res.penVec;
+        }
+        if (simplex[0] == simplex[1] || simplex[2] == simplex[3] || simplex[1] == simplex[3] || simplex[0] == simplex[3]) {
+            return collisionRes(true,glm::vec3(0.001));
+        }
+        return collisionRes(true,glm::vec3(0));
+    }
+
+    collisionRes checkCollision(Entity& e) {
+        return checkCollision(*this, e);
+    }
 
 protected:
     virtual glm::vec3 support(glm::vec3 dir) = 0;
@@ -57,17 +62,19 @@ private:
         std::cout << "(" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl; 
     }
 
-    static std::pair<bool,glm::vec3> nearestSimplex(std::vector<glm::vec3>& s) {
+    static collisionRes nearestSimplex(std::vector<glm::vec3>& s) {
         if (s.size() == 2) { //Line case
             glm::vec3 ab = s.at(0) - s.at(1);
             glm::vec3 ao = -s.at(1);
             glm::vec3 dir;
-            if (glm::dot(ab,ao) >= 0) { dir = glm::cross(glm::cross(ab, ao), ab); } 
+            if (glm::dot(ab,ao) >= 0) { 
+                dir = glm::cross(glm::cross(ab, ao), ab);
+            } 
             else { 
                 dir = ao;
                 s = {s.at(1)};
             }
-            return std::make_pair(false, dir);
+            return collisionRes(false, dir);
         } else if (s.size() == 3) { //Triangle case
             glm::vec3 a = s.at(2);
             glm::vec3 b = s.at(1);
@@ -111,7 +118,7 @@ private:
                 }
             }
 
-            return std::make_pair(false, dir);
+            return collisionRes(false, dir);
         } else { //Tetrahedron case
             glm::vec3 a = s.at(3);
             glm::vec3 b = s.at(2);
@@ -146,7 +153,7 @@ private:
             switch (outTriangles.size())
             {
             case 0:
-                return std::make_pair(true, ao);
+                return collisionRes(true, ao);
                 break;
             case 1:
                 dir = -outTriangles[0];
@@ -166,7 +173,64 @@ private:
                 break;
             }
 
-            return std::make_pair(false, dir);
+            return collisionRes(false, dir);
         }
     }
+
+    struct Face {
+        double distance;
+        glm::vec3 normal;
+        int index;
+    };
+
+    static glm::vec3 expandingPolytope(std::vector<glm::vec3> simplex, Entity& e1, Entity& e2) {
+        std::vector<unsigned int> faces = {
+            3,2,1,
+            3,0,2,
+            3,1,0,
+            2,1,0
+        };
+        while (true) {
+            Face e = closestFace(simplex, faces);
+            glm::vec3 a = e1.support(e.normal) - e2.support(-e.normal);
+            double d = glm::dot(a,e.normal);
+
+            if (d - e.distance < 0.001) {
+                return e.normal*glm::vec3(e.distance);
+            } else {
+                simplex.insert(std::next(simplex.begin(),e.index), a);
+            }
+        }
+    }
+
+    static Face closestFace(const std::vector<glm::vec3>& simplex,const std::vector<unsigned int>& faces) {
+        Face res;
+        int minTriangle = 0;
+        float  minDistance = FLT_MAX;
+
+        for (int i = 0; i < faces.size()/3; i++) {
+            Face curr = getFace(simplex,faces,i);
+            if (curr.distance < minDistance) {
+                res = curr;
+                res.index = i;
+                minDistance = curr.distance;
+            }
+        }
+        return res;
+    }
+
+    static Face getFace(const std::vector<glm::vec3>& simplex,const std::vector<unsigned int>& faces, unsigned int i) {
+        glm::vec3 a = simplex[faces[i*3+2]];
+        glm::vec3 b = simplex[faces[i*3+1]];
+        glm::vec3 c = simplex[faces[i*3]];
+
+        glm::vec3 normal = glm::normalize(glm::cross(b - a, c - a));
+        float distance = glm::dot(normal, a);
+
+        if (distance < 0) {
+            normal = -normal;
+            distance = -distance;
+        }
+    }
+
 };
