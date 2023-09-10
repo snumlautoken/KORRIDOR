@@ -17,7 +17,7 @@ int main() {
 
     Scene scene(graphics);
 
-    Player p(0.15,1.5,graphics->input);
+    Player p(0.4,1.5,graphics->input);
 
     scene.prisms.push_back(Prism(glm::vec3(0.0,-0.05,0.0),45,glm::vec3(0.0,1.0,0.0),glm::vec3(100.0, 0.1, 100.0), graphics->textures[0]));
     scene.prisms.push_back(Prism(glm::vec3(0,1.5,0),0,glm::vec3(1),glm::vec3(0.3), graphics->textures[2]));
@@ -43,15 +43,16 @@ int main() {
 
     while(!glfwWindowShouldClose(graphics->window)) {
         double time = glfwGetTime();
-        cheese.setRot(20 * time);
+        /*cheese.setRot(20 * time);
         glm::vec3 newPos = cheese.getPos();
         newPos.y = 1.5+0.2*sin(time);
-        cheese.setPos(newPos);
+        cheese.setPos(newPos);*/
         p.update();
-        auto c = Entity::checkCollision(p,cheese);
+        auto c = Entity::checkCollision(p,scene.prisms[11]);
         if (c.collision) {
             std::cout << time << std::endl;
             std::cout << "(" << c.penVec.x << ", " << c.penVec.y << ", " << c.penVec.z << ")" << std::endl; 
+            p.move(-c.penVec);
         }
         /*if (scene.prisms[2].checkCollision(scene.prisms[2+1]).collision) {
             std::cout << "2: " << time << std::endl;

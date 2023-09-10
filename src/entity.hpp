@@ -205,7 +205,7 @@ private:
             std::cout << e.distance << std::endl;
             std::cout << d << std::endl;
 
-            if (d - e.distance < 0.001) {
+            if (fabs(d - e.distance) < 0.4) {
                 return e.normal*glm::vec3(e.distance);
             } else {
                 std::vector<Edge> uniqueEdges;

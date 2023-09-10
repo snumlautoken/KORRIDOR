@@ -11,13 +11,13 @@ glm::vec3 Player::support(glm::vec3 dir) {
         dir.y = 0;
         if (glm::length(dir) == 0) {dir.x = 1;}
         dir = glm::normalize(dir) * glm::vec3(c.rad);
-        dir.y = c.h/2;
+        dir.y = 0.1;
         return pos + dir;
     }
     dir.y = 0;
     if (glm::length(dir) == 0) {dir.x = 1;}
     dir = glm::normalize(dir) * glm::vec3(c.rad);
-    dir.y = -c.h/2;
+    dir.y = -c.h;
     return pos + dir;
 }
 
