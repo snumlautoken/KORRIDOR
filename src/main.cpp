@@ -48,10 +48,12 @@ int main() {
         newPos.y = 1.5+0.2*sin(time);
         cheese.setPos(newPos);
         p.update();
-        if (Entity::checkCollision(p,cheese).collision) {
+        auto c = Entity::checkCollision(p,cheese);
+        if (c.collision) {
             std::cout << time << std::endl;
+            std::cout << "(" << c.penVec.x << ", " << c.penVec.y << ", " << c.penVec.z << ")" << std::endl; 
         }
-        if (scene.prisms[2].checkCollision(scene.prisms[2+1]).collision) {
+        /*if (scene.prisms[2].checkCollision(scene.prisms[2+1]).collision) {
             std::cout << "2: " << time << std::endl;
         }
 
@@ -65,7 +67,7 @@ int main() {
 
         if (scene.prisms[2].checkCollision(scene.prisms[5+1]).collision) {
             std::cout << "5: " << time << std::endl;
-        }
+        }*/
         scene.render();
     }
     return 0;

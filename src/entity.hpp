@@ -42,7 +42,7 @@ public:
         if (simplex[0] == simplex[1] || simplex[2] == simplex[3] || simplex[1] == simplex[3] || simplex[0] == simplex[3]) {
             return collisionRes(true,glm::vec3(0.001));
         }
-        return collisionRes(true,glm::vec3(0));
+        return collisionRes(true,expandingPolytope(simplex,e1,e2));
     }
 
     collisionRes checkCollision(Entity& e) {
@@ -183,22 +183,52 @@ private:
         int index;
     };
 
+    struct Edge {
+        unsigned int a,b;
+        const bool operator==(const Edge& rhs) {
+            return (a == rhs.a && b == rhs.b) || (a == rhs.b && b == rhs.a);
+        }
+    };
+
     static glm::vec3 expandingPolytope(std::vector<glm::vec3> simplex, Entity& e1, Entity& e2) {
         std::vector<unsigned int> faces = {
-            3,2,1,
-            3,0,2,
-            3,1,0,
-            2,1,0
+            1,2,3,
+            2,0,3,
+            0,1,3,
+            0,1,2
         };
         while (true) {
             Face e = closestFace(simplex, faces);
             glm::vec3 a = e1.support(e.normal) - e2.support(-e.normal);
-            double d = glm::dot(a,e.normal);
+            double d = glm::dot(e.normal,a);
+            printVec(e.normal);
+            std::cout << e.distance << std::endl;
+            std::cout << d << std::endl;
 
             if (d - e.distance < 0.001) {
                 return e.normal*glm::vec3(e.distance);
             } else {
-                simplex.insert(std::next(simplex.begin(),e.index), a);
+                std::vector<Edge> uniqueEdges;
+                for (int i = 0; i < faces.size()/3; i++) {
+                    if (glm::dot(getFace(simplex,faces,i).normal, a) > 0) {
+                        addUnique(uniqueEdges, Edge(faces[i*3  ], faces[i*3+1]));
+                        addUnique(uniqueEdges, Edge(faces[i*3+1], faces[i*3+2]));
+                        addUnique(uniqueEdges, Edge(faces[i*3+2], faces[i*3  ]));
+
+                        faces.erase(std::next(faces.begin(),i*3),std::next(faces.begin(),i*3+2));
+
+                        i--;
+                    }
+                }
+
+                std::vector<unsigned int> newFaces;
+                for (Edge e : uniqueEdges) {
+                    newFaces.push_back(e.a);
+                    newFaces.push_back(e.b);
+                    newFaces.push_back(simplex.size());
+                }
+                simplex.push_back(a);    
+                faces.insert(faces.end(), newFaces.begin(), newFaces.end());
             }
         }
     }
@@ -231,6 +261,18 @@ private:
             normal = -normal;
             distance = -distance;
         }
+
+        return Face(distance,normal);
+    }
+
+    static void addUnique(std::vector<Edge>& edges, Edge e) {
+        for (auto it = edges.begin(); it != edges.end(); it++) {
+            if ((e.a == it->a && e.b == it->b) || (e.a == it->b && e.b == it->a)) {
+                edges.erase(it);
+                return;
+            }
+        }
+        edges.push_back(e);
     }
 
 };
