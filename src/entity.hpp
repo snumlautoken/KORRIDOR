@@ -50,6 +50,7 @@ public:
     }
 
 protected:
+    // Needs to be finite atm
     virtual glm::vec3 support(glm::vec3 dir) = 0;
     glm::vec3 scale;
     GLuint tex;
@@ -202,7 +203,7 @@ private:
             glm::vec3 a = e1.support(e.normal) - e2.support(-e.normal);
             double d = glm::dot(e.normal,a);
 
-            if (d - e.distance < 0.01) {
+            if (d - e.distance < 0.001) {
                 return e.normal*glm::vec3(d);
             } else if (e.distance == 0) {
                 return glm::vec3(0);
@@ -214,7 +215,9 @@ private:
                         addUnique(uniqueEdges, Edge(faces[i*3  ], faces[i*3+1]));
                         addUnique(uniqueEdges, Edge(faces[i*3+1], faces[i*3+2]));
                         addUnique(uniqueEdges, Edge(faces[i*3+2], faces[i*3  ]));
+
                         faces.erase(std::next(faces.begin(),i*3),std::next(faces.begin(),i*3+3));
+
                         i--;
                     }
                 }
@@ -253,7 +256,7 @@ private:
         glm::vec3 c = simplex[faces[i*3]];
 
         glm::vec3 normal = glm::normalize(glm::cross(b - a, c - a));
-        float distance = glm::dot(normal, a);
+        double distance = glm::dot(normal, a);
 
         if (distance < 0) {
             normal = -normal;
