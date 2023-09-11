@@ -17,7 +17,7 @@ Graphics::Graphics(int width, int height) {
     glewExperimental = GL_TRUE;
 
     glfwMakeContextCurrent(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
     glfwSetFramebufferSizeCallback(window, 
         [](GLFWwindow* window, int width, int height) {glViewport(0, 0, width, height);}
     );

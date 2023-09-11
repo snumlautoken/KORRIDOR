@@ -193,30 +193,28 @@ private:
     static glm::vec3 expandingPolytope(std::vector<glm::vec3> simplex, Entity& e1, Entity& e2) {
         std::vector<unsigned int> faces = {
             1,2,3,
-            2,0,3,
             0,1,3,
-            0,1,2
+            2,0,3,
+            1,0,2
         };
         while (true) {
             Face e = closestFace(simplex, faces);
             glm::vec3 a = e1.support(e.normal) - e2.support(-e.normal);
             double d = glm::dot(e.normal,a);
-            printVec(e.normal);
-            std::cout << e.distance << std::endl;
-            std::cout << d << std::endl;
 
-            if (fabs(d - e.distance) < 0.4) {
-                return e.normal*glm::vec3(e.distance);
+            if (d - e.distance < 0.01) {
+                return e.normal*glm::vec3(d);
+            } else if (e.distance == 0) {
+                return glm::vec3(0);
             } else {
                 std::vector<Edge> uniqueEdges;
                 for (int i = 0; i < faces.size()/3; i++) {
-                    if (glm::dot(getFace(simplex,faces,i).normal, a) > 0) {
+                    double dir = glm::dot(getFace(simplex,faces,i).normal, a);
+                    if (dir > 0) {
                         addUnique(uniqueEdges, Edge(faces[i*3  ], faces[i*3+1]));
                         addUnique(uniqueEdges, Edge(faces[i*3+1], faces[i*3+2]));
                         addUnique(uniqueEdges, Edge(faces[i*3+2], faces[i*3  ]));
-
-                        faces.erase(std::next(faces.begin(),i*3),std::next(faces.begin(),i*3+2));
-
+                        faces.erase(std::next(faces.begin(),i*3),std::next(faces.begin(),i*3+3));
                         i--;
                     }
                 }
@@ -227,7 +225,7 @@ private:
                     newFaces.push_back(e.b);
                     newFaces.push_back(simplex.size());
                 }
-                simplex.push_back(a);    
+                simplex.push_back(a);
                 faces.insert(faces.end(), newFaces.begin(), newFaces.end());
             }
         }
@@ -236,7 +234,7 @@ private:
     static Face closestFace(const std::vector<glm::vec3>& simplex,const std::vector<unsigned int>& faces) {
         Face res;
         int minTriangle = 0;
-        float  minDistance = FLT_MAX;
+        double minDistance = FLT_MAX;
 
         for (int i = 0; i < faces.size()/3; i++) {
             Face curr = getFace(simplex,faces,i);

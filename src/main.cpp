@@ -27,7 +27,10 @@ int main() {
     scene.prisms.push_back(Prism(glm::vec3(9.86,1.8,10.3),0,glm::vec3(1),glm::vec3(0.3), graphics->textures[2]));
     scene.prisms.push_back(Prism(glm::vec3(9.56,1.5,10),0,glm::vec3(1),glm::vec3(0.3), graphics->textures[2]));
     scene.prisms[1].scaleTex = false;
+    scene.prisms.push_back(Prism(glm::vec3(-10.0,5,-10.0),0,glm::vec3(0.0,1.0,0.0),glm::vec3(10.0, 10, 1.0), graphics->textures[1]));
     createPillar(scene, glm::vec3(0),1,graphics->textures[1]);
+
+
 
     for (int i = 0; i < 20; i++) {
         createPillar(scene, glm::vec3(20-2*i,0,2),3,graphics->textures[1]);
@@ -48,12 +51,15 @@ int main() {
         newPos.y = 1.5+0.2*sin(time);
         cheese.setPos(newPos);*/
         p.update();
-        auto c = Entity::checkCollision(p,scene.prisms[11]);
+        auto c = Entity::checkCollision(p,scene.prisms[7]);
         if (c.collision) {
-            std::cout << time << std::endl;
-            std::cout << "(" << c.penVec.x << ", " << c.penVec.y << ", " << c.penVec.z << ")" << std::endl; 
             p.move(-c.penVec);
         }
+        c = Entity::checkCollision(p,scene.prisms[0]);
+        if (c.collision) {
+            p.move(c.penVec);
+        }
+
         /*if (scene.prisms[2].checkCollision(scene.prisms[2+1]).collision) {
             std::cout << "2: " << time << std::endl;
         }
