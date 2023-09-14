@@ -61,7 +61,7 @@ int main() {
         }
         c = Entity::checkCollision(p,cheese);
         if (c.collision) {
-            cheese.setPos(cheese.getPos()-c.penVec);
+            cheese.setPos(cheese.getPos()+c.penVec);
         }
 
 

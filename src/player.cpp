@@ -7,21 +7,17 @@ Player::Player(double rad, double h, std::shared_ptr<Input>& in) {
 }
 
 glm::vec3 Player::support(glm::vec3 dir) {
-    double oldY = dir.y;
-    dir.y = 0;
-    double maxVal = FLT_MIN;
-    int maxDeg = 0;
-    for (int i = 0; i < 360; i += 20) {
-        double val = dir.x*cos(i*M_PI/180) + dir.z*sin(i*M_PI/180);
-        if (val > maxVal) {
-            maxDeg = i;
-        }
+    if (dir.y >= 0) {
+        dir.y = 0;
+        if (glm::length(dir) == 0) {dir.x = 1;}
+        dir = glm::normalize(dir) * glm::vec3(c.rad);
+        dir.y = 0.1;
+        return pos + dir;
     }
-    dir.x = c.rad*cos(maxDeg*M_PI/180);
-    dir.z = c.rad*sin(maxDeg*M_PI/180);
-
-    dir.y = oldY >= 0 ? 0.1 : -c.h;
-
+    dir.y = 0;
+    if (glm::length(dir) == 0) {dir.x = 1;}
+    dir = glm::normalize(dir) * glm::vec3(c.rad);
+    dir.y = -c.h;
     return pos + dir;
 }
 

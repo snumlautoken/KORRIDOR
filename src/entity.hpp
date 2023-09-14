@@ -50,7 +50,6 @@ public:
     }
 
 protected:
-    // Needs to be finite atm
     virtual glm::vec3 support(glm::vec3 dir) = 0;
     glm::vec3 scale;
     GLuint tex;
@@ -198,15 +197,20 @@ private:
             2,0,3,
             1,0,2
         };
-        while (true) {
+        for (auto s : simplex) {
+            printVec(s);
+        }
+        std::cout << "====================" << std::endl;
+        for (int iter = 0; iter < 64; iter++) {
             Face e = closestFace(simplex, faces);
             glm::vec3 a = e1.support(e.normal) - e2.support(-e.normal);
             double d = glm::dot(e.normal,a);
+            printVec(a);
+            std::cout << e.distance << std::endl;
+            std::cout << d << std::endl;
 
-            if (d - e.distance < 0.001) {
-                return e.normal*glm::vec3(d);
-            } else if (e.distance == 0) {
-                return glm::vec3(0);
+            if (d - e.distance < 0.001 || e.distance == 0) {
+                return e.normal*glm::vec3(e.distance);
             } else {
                 std::vector<Edge> uniqueEdges;
                 for (int i = 0; i < faces.size()/3; i++) {
@@ -232,6 +236,11 @@ private:
                 faces.insert(faces.end(), newFaces.begin(), newFaces.end());
             }
         }
+
+
+        std::cout << "No convergence :(" << std::endl;
+        Face e = closestFace(simplex, faces);
+        return e.normal*glm::vec3(e.distance);
     }
 
     static Face closestFace(const std::vector<glm::vec3>& simplex,const std::vector<unsigned int>& faces) {
@@ -262,6 +271,10 @@ private:
             normal = -normal;
             distance = -distance;
         }
+
+        std::cout << "=================" << std::endl;
+        printVec(normal);
+        std::cout << "=================" << std::endl;
 
         return Face(distance,normal);
     }
