@@ -19,6 +19,5 @@ public:
     std::shared_ptr<Input> input;
     std::vector<Texture> textures;
 private:
-    std::unique_ptr<PrismRenderer> pr;
     std::unique_ptr<SkyboxRenderer> sr;
 };

@@ -12,22 +12,41 @@ public:
     void setPos(glm::vec3 p) {pos = p; recalcModel();};
     void setAxis(glm::vec3 a) {axis = a; recalcModel();};
 
+    void render() override;
+
+    static Shader sp;
+    static void createRenderer(Shader program) {
+        glGenVertexArrays(1, &vao);
+        glGenBuffers(1, &vbo);
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(normals), nullptr, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, nullptr);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, (void*)(sizeof(vertices)));
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+
+        sp = program;
+        sp.use();
+        sp.loadUniform("tex", 0);
+        sp.loadUniform("projection", glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.01f, 1000.0f));
+        sp.loadUniform("lightDir", glm::vec3(1,-1,1));
+    };
+
     bool scaleTex = true;
+
 private:
     glm::vec3 support(glm::vec3 dir) override;
     void recalcModel();
     void recalcVertices();
     glm::mat4 model;
     std::pair<glm::mat4,glm::mat4> vert;
-};
 
-class PrismRenderer {
-public:
-    PrismRenderer(Shader program);
-    void render(Prism prism);
-    Shader shaderProgram;
-private:
-    GLuint vao;
-    GLuint vbo;
-    GLuint ebo;
+    static GLuint vao;
+    static GLuint vbo;
+
+    static const float vertices[3*36];
+    static const float normals[3*36];
 };

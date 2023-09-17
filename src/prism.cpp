@@ -1,7 +1,7 @@
 #include "prism.hpp"
 #include <iostream>
 
-const float vertices[3*36] = {
+const float Prism::vertices[] = {
     -0.5f, -0.5f, -0.5f,
     0.5f, -0.5f, -0.5f,
     0.5f,  0.5f, -0.5f,
@@ -45,7 +45,7 @@ const float vertices[3*36] = {
     -0.5f,  0.5f, -0.5f
 };
 
-const float normals[3*36] = {
+const float Prism::normals[] = {
     0,0,-1,
     0,0,-1,
     0,0,-1,
@@ -89,31 +89,18 @@ const float normals[3*36] = {
     0,1,0
 };
 
-PrismRenderer::PrismRenderer(Shader program) : shaderProgram(program) {
-    glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
-    glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) + sizeof(normals), nullptr, GL_STATIC_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-    glBufferSubData(GL_ARRAY_BUFFER, sizeof(vertices), sizeof(normals), normals);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, nullptr);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, (void*)(sizeof(vertices)));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
+Shader Prism::sp;
+GLuint Prism::vao;
+GLuint Prism::vbo;
 
-    program.use();
-    shaderProgram.loadUniform("tex", 0);
-}
-
-void PrismRenderer::render(Prism p) {
-    glm::mat4 model = p.getModel();
-    glm::mat4 scale = p.scaleTex ? glm::scale(glm::mat4(1.0f), p.getScale()) : glm::mat4(1.0f);
+void Prism::render() {
+    glm::mat4 model = getModel();
+    glm::mat4 scale = scaleTex ? glm::scale(glm::mat4(1.0f), getScale()) : glm::mat4(1.0f);
     glm::mat3 invModel = glm::mat3(glm::transpose(glm::inverse(model)));
-    shaderProgram.loadUniform("model", model);
-    shaderProgram.loadUniform("scale", glm::mat3(scale));
-    shaderProgram.loadUniform("invModel", invModel);
-    glBindTexture(GL_TEXTURE_2D, p.getTex());
+    sp.loadUniform("model", model);
+    sp.loadUniform("scale", glm::mat3(scale));
+    sp.loadUniform("invModel", invModel);
+    glBindTexture(GL_TEXTURE_2D, getTex());
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);

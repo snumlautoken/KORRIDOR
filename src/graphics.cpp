@@ -30,13 +30,6 @@ Graphics::Graphics(int width, int height) {
 
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.01f, 1000.0f);
-
-    Shader program("shaders/object.vs", "shaders/object.fs");
-    pr = std::make_unique<PrismRenderer>(program);
-
-    program.use();
-    program.loadUniform("projection", projection);
-    program.loadUniform("lightDir", glm::vec3(1,-1,1));
     
     Shader sbprogram("shaders/skybox.vs", "shaders/skybox.fs");
     sr = std::make_unique<SkyboxRenderer>(sbprogram);
@@ -49,10 +42,8 @@ void Graphics::loadTex(std::string file) {
 }
 
 void Graphics::draw(std::vector<Prism> prisms) {
-    pr->shaderProgram.use();
-    pr->shaderProgram.loadUniform("view", input->getView());
     for (auto prism : prisms) {
-        pr->render(prism);
+        prism.render();
     }
 }
 void Graphics::draw(Skybox skybox) {

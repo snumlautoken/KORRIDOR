@@ -9,6 +9,7 @@
 
 class Shader {
 public:
+    Shader(){};
     Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
     void use();
     void loadUniform(std::string loc, glm::mat4 u);
