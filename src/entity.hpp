@@ -197,24 +197,24 @@ private:
             2,0,3,
             1,0,2
         };
-        for (auto s : simplex) {
-            printVec(s);
-        }
-        std::cout << "====================" << std::endl;
-        for (int iter = 0; iter < 64; iter++) {
+        glm::vec3 minVec;
+        double minDiff = FLT_MAX;
+        for (int iter = 0; iter < 256; iter++) {
             Face e = closestFace(simplex, faces);
             glm::vec3 a = e1.support(e.normal) - e2.support(-e.normal);
             double d = glm::dot(e.normal,a);
-            printVec(a);
-            std::cout << e.distance << std::endl;
-            std::cout << d << std::endl;
+            double diff = d - e.distance;
+
+            if (diff < minDiff) {
+                minVec = e.normal*glm::vec3(e.distance);
+            }
 
             if (d - e.distance < 0.001 || e.distance == 0) {
                 return e.normal*glm::vec3(e.distance);
             } else {
                 std::vector<Edge> uniqueEdges;
                 for (int i = 0; i < faces.size()/3; i++) {
-                    double dir = glm::dot(getFace(simplex,faces,i).normal, a);
+                    double dir = glm::dot(getFace(simplex,faces,i).normal, a-simplex[faces[i*3]]);
                     if (dir > 0) {
                         addUnique(uniqueEdges, Edge(faces[i*3  ], faces[i*3+1]));
                         addUnique(uniqueEdges, Edge(faces[i*3+1], faces[i*3+2]));
@@ -236,11 +236,8 @@ private:
                 faces.insert(faces.end(), newFaces.begin(), newFaces.end());
             }
         }
-
-
-        std::cout << "No convergence :(" << std::endl;
-        Face e = closestFace(simplex, faces);
-        return e.normal*glm::vec3(e.distance);
+        // No covergence
+        return minVec;
     }
 
     static Face closestFace(const std::vector<glm::vec3>& simplex,const std::vector<unsigned int>& faces) {
@@ -271,10 +268,6 @@ private:
             normal = -normal;
             distance = -distance;
         }
-
-        std::cout << "=================" << std::endl;
-        printVec(normal);
-        std::cout << "=================" << std::endl;
 
         return Face(distance,normal);
     }
