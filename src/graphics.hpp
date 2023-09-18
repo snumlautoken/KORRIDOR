@@ -14,10 +14,8 @@ public:
     void render();
     void draw(std::vector<Prism> prisms);
     void draw(Skybox skybox);
-    void loadTex(std::string file);
     GLFWwindow* window;
     std::shared_ptr<Input> input;
-    std::vector<Texture> textures;
 private:
     std::unique_ptr<SkyboxRenderer> sr;
 };

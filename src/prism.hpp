@@ -6,11 +6,11 @@ public:
     Prism(glm::vec3 pos, float rot, glm::vec3 axis, glm::vec3 dim, Texture texture);
     glm::mat4 getModel();
 
-    void setScale(glm::vec3 s) {scale = s; recalcModel();};
-    void setTex(GLuint t) {tex = t; recalcModel();};
-    void setRot(float r) {rot = r; recalcModel();};
-    void setPos(glm::vec3 p) {pos = p; recalcModel();};
-    void setAxis(glm::vec3 a) {axis = a; recalcModel();};
+    void setScale(glm::vec3 s) override {scale = s; recalcModel();};
+    void setTex(GLuint t) override {tex = t; recalcModel();};
+    void setRot(float r) override {rot = r; recalcModel();};
+    void setPos(glm::vec3 p) override {pos = p; recalcModel();};
+    void setAxis(glm::vec3 a) override {axis = a; recalcModel();};
 
     void render() override;
     Shader getProgram() override {return program;}

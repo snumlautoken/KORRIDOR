@@ -37,10 +37,6 @@ Graphics::Graphics(int width, int height) {
     sbprogram.loadUniform("projection", projection);
 }
 
-void Graphics::loadTex(std::string file) {
-    textures.push_back(Texture(std::string("resources/textures/" + file)));
-}
-
 void Graphics::draw(std::vector<Prism> prisms) {
     for (auto prism : prisms) {
         prism.render();
