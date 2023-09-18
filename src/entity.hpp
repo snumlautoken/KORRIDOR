@@ -26,8 +26,6 @@ public:
     void setPos(glm::vec3 p) {pos = p;};
     void setAxis(glm::vec3 a) {axis = a;};
 
-    virtual void render() {};
-
     static collisionRes checkCollision(Entity& e1, Entity& e2) {
         glm::vec3 axis(1);
         glm::vec3 a = e1.support(axis) - e2.support(-axis);

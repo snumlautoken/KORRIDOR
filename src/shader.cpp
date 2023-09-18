@@ -20,6 +20,7 @@ void Shader::loadUniform(std::string loc, int u) {
 }
 
 Shader::Shader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath) {
+    test = vertexShaderPath;
     std::stringstream ss{ };
     std::string vertexShaderSource{ };
     std::string fragmentShaderSource{ };

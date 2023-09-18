@@ -16,6 +16,9 @@ public:
     void loadUniform(std::string loc, glm::mat3 u);
     void loadUniform(std::string loc, glm::vec3 u);
     void loadUniform(std::string loc, int u);
+    std::string test = "Wahoo";
+
+    std::string getTest() {return test;}
 private:
     GLuint shaderProgram;
 };

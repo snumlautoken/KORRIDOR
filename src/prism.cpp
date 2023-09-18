@@ -89,7 +89,7 @@ const float Prism::normals[] = {
     0,1,0
 };
 
-Shader Prism::sp;
+Shader Prism::program;
 GLuint Prism::vao;
 GLuint Prism::vbo;
 
@@ -97,9 +97,9 @@ void Prism::render() {
     glm::mat4 model = getModel();
     glm::mat4 scale = scaleTex ? glm::scale(glm::mat4(1.0f), getScale()) : glm::mat4(1.0f);
     glm::mat3 invModel = glm::mat3(glm::transpose(glm::inverse(model)));
-    sp.loadUniform("model", model);
-    sp.loadUniform("scale", glm::mat3(scale));
-    sp.loadUniform("invModel", invModel);
+    program.loadUniform("model", model);
+    program.loadUniform("scale", glm::mat3(scale));
+    program.loadUniform("invModel", invModel);
     glBindTexture(GL_TEXTURE_2D, getTex());
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);

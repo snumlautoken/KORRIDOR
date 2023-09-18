@@ -1,7 +1,7 @@
 #include "entity.hpp"
-#include "shader.hpp"
+#include "renderable.hpp"
 
-class Prism : public Entity {
+class Prism : public Entity, public Renderable {
 public:
     Prism(glm::vec3 pos, float rot, glm::vec3 axis, glm::vec3 dim, Texture texture);
     glm::mat4 getModel();
@@ -13,9 +13,9 @@ public:
     void setAxis(glm::vec3 a) {axis = a; recalcModel();};
 
     void render() override;
+    Shader getProgram() override {return program;}
 
-    static Shader sp;
-    static void createRenderer(Shader program) {
+    static void createRenderer(Shader sp) {
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);
         glBindVertexArray(vao);
@@ -28,11 +28,11 @@ public:
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
 
-        sp = program;
-        sp.use();
-        sp.loadUniform("tex", 0);
-        sp.loadUniform("projection", glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.01f, 1000.0f));
-        sp.loadUniform("lightDir", glm::vec3(1,-1,1));
+        program = sp;
+        program.use();
+        program.loadUniform("tex", 0);
+        program.loadUniform("projection", glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.01f, 1000.0f));
+        program.loadUniform("lightDir", glm::vec3(1,-1,1));
     };
 
     bool scaleTex = true;
@@ -44,6 +44,7 @@ private:
     glm::mat4 model;
     std::pair<glm::mat4,glm::mat4> vert;
 
+    static Shader program;
     static GLuint vao;
     static GLuint vbo;
 

@@ -6,6 +6,7 @@
 #include <typeinfo>
 
 typedef std::shared_ptr<Entity> Entity_ptr;
+typedef std::shared_ptr<Renderable> Renderable_ptr;
 
 class Scene {
 public:
@@ -15,14 +16,19 @@ public:
     Player player;
 
     template<typename T>
-    void addEntity(T e) {
-        std::string className = typeid(e).name();
-        entities[typeid(e).name()].push_back(std::make_shared<T>(e));
+    std::shared_ptr<T> addEntity(T e) {
+        std::shared_ptr<T> e_ref = std::make_shared<T>(e);
+        entities.push_back(e_ref);
+        if (dynamic_cast<const Renderable*>(e_ref.get()) != nullptr) {
+            renderables[typeid(e).name()].push_back(e_ref);
+        }
+        return e_ref;
     }
 
     void playerCollision();
     void render();
 private:
     std::shared_ptr<Graphics> gr_ptr;
-    std::map<std::string, std::list<Entity_ptr>> entities;
+    std::list<Entity_ptr> entities;
+    std::map<std::string, std::list<Renderable_ptr>> renderables;
 };
