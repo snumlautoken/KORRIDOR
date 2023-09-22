@@ -31,7 +31,7 @@ public:
         program = sp;
         program.use();
         program.loadUniform("tex", 0);
-        program.loadUniform("projection", glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.01f, 1000.0f));
+        program.loadUniform("projection", glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.1f, 1000.0f));
         program.loadUniform("lightDir", glm::vec3(1,-1,1));
     };
 

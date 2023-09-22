@@ -11,7 +11,10 @@ public:
     void pollEvents();
     glm::mat4 getView();
     glm::vec3 getPos() {return pos;}
+    glm::vec3 getUp() {return up;}
     void setPos(glm::vec3 newPos) {pos = newPos;}
+
+    bool jump = false;
 private:
     void processKb(double dT);
     void processM(double dT);

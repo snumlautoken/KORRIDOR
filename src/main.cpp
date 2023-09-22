@@ -37,7 +37,7 @@ int main() {
     scene.addEntity<Prism>(Prism(glm::vec3(10.0,1,10.0),70,glm::vec3(1,0,0),glm::vec3(10.0, 10, 1.0), tile));
     
     createPillar(scene, glm::vec3(0),1,tile);
-    createStairs(scene, glm::vec3(-18,0,-10),54,tile);
+    createStairs(scene, glm::vec3(-18,0,-10.3),54,tile);
 
     for (int i = 0; i < 20; i++) {
         createPillar(scene, glm::vec3(20-2*i,0,2),3,tile);
@@ -52,19 +52,15 @@ int main() {
     while(!glfwWindowShouldClose(graphics->window)) {
         double time = glfwGetTime();
         double deltaTime = time - lastTime;
-        
+        lastTime = time;
+
         cheeseBox->setRot(20 * time);
         glm::vec3 newPos = cheeseBox->getPos();
         newPos.y = 1.5+0.2*sin(time);
         cheeseBox->setPos(newPos);
-
-        glm::vec3 gravity(0,-9.82,0);
-        scene.player.update();
-        scene.player.move(gravity*glm::vec3(deltaTime));
-
+        scene.player.update(deltaTime);
         scene.playerCollision();
         scene.render();
-        lastTime = time;
     }
     return 0;
 }

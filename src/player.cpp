@@ -21,6 +21,17 @@ glm::vec3 Player::support(glm::vec3 dir) {
     return pos + dir;
 }
 
-void Player::update() {
+void Player::update(double dT) {
+    if (input->jump && grounded) {
+        velocity += glm::vec3(0,10,0);
+    }
+    input->jump=false;
+    grounded = false;
     pos = input->getPos();
+    pos += velocity*glm::vec3(dT);
+    input->setPos(pos);
+
+    if (glm::length(velocity) <= terminalVelocity) {
+        velocity -= input->getUp()*glm::vec3(dT*gravity);
+    }
 }

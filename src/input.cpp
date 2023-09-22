@@ -24,6 +24,7 @@ void Input::processKb(double dT) {
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)           { movePos -= glm::normalize(glm::cross(dir, up)); };
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)           { movePos -= dir; };
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)           { movePos += glm::normalize(glm::cross(dir, up)); };
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)       { jump = true; };
 
     movePos.y = 0.0f;
     movePos = glm::length(movePos) > 0.0f ? glm::normalize(movePos) : movePos;
