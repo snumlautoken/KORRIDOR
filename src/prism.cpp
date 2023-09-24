@@ -100,18 +100,17 @@ void Prism::render() {
     program.loadUniform("model", model);
     program.loadUniform("scale", glm::mat3(scale));
     program.loadUniform("invModel", invModel);
-    glBindTexture(GL_TEXTURE_2D, getTex());
+    tex.bind();
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
 }
 
-Prism::Prism(glm::vec3 p, float r, glm::vec3 a, glm::vec3 d, Texture texture) {
+Prism::Prism(glm::vec3 p, float r, glm::vec3 a, glm::vec3 d, Texture texture) : Renderable(texture) {
     pos = p;
     rot = r;
     axis = a;
     scale = d;
-    tex = texture.tex;
 
     recalcModel();
 }

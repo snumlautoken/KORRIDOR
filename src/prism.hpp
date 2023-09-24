@@ -7,7 +7,6 @@ public:
     glm::mat4 getModel();
 
     void setScale(glm::vec3 s) override {scale = s; recalcModel();};
-    void setTex(GLuint t) override {tex = t; recalcModel();};
     void setRot(float r) override {rot = r; recalcModel();};
     void setPos(glm::vec3 p) override {pos = p; recalcModel();};
     void setAxis(glm::vec3 a) override {axis = a; recalcModel();};
@@ -31,6 +30,7 @@ public:
         program = sp;
         program.use();
         program.loadUniform("tex", 0);
+        program.loadUniform("texNorm", 1);
         program.loadUniform("projection", glm::perspective(glm::radians(45.0f), (float)1000 / (float)1000, 0.1f, 1000.0f));
         program.loadUniform("lightDir", glm::vec3(1,-1,1));
     };

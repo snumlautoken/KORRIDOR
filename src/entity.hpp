@@ -5,7 +5,6 @@
 #include <deque>
 #include <vector>
 #include <iostream>
-#include "texture.hpp"
 
 struct collisionRes {
     bool collision;
@@ -15,13 +14,11 @@ struct collisionRes {
 class Entity {
 public:
     virtual glm::vec3 getScale() {return scale;};
-    virtual GLuint getTex() {return tex;};
     virtual float getRot() {return rot;};
     virtual glm::vec3 getPos() {return pos;};
     virtual glm::vec3 getAxis() {return axis;};
 
     virtual void setScale(glm::vec3 s) {scale = s;};
-    virtual void setTex(GLuint t) {tex = t;};
     virtual void setRot(float r) {rot = r;};
     virtual void setPos(glm::vec3 p) {pos = p;};
     virtual void setAxis(glm::vec3 a) {axis = a;};
@@ -52,7 +49,6 @@ public:
 protected:
     virtual glm::vec3 support(glm::vec3 dir) = 0;
     glm::vec3 scale;
-    GLuint tex;
     float rot;
     glm::vec3 pos;
     glm::vec3 axis;

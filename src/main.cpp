@@ -16,8 +16,8 @@ void createStairs(Scene& scene, glm::vec3 pos, int steps, Texture tex) {
 int main() {
     std::shared_ptr<Graphics> graphics = std::make_shared<Graphics>(1000,1000);
 
-    Texture grass = Texture("resources/textures/grass.png");
-    Texture tile = Texture("resources/textures/tile.jpg");
+    Texture grass = Texture("resources/textures/grass.png", "resources/textures/grass_norm.png");
+    Texture tile = Texture("resources/textures/tile.jpg", "resources/textures/tile_norm.jpg");
     Texture cheese = Texture("resources/textures/cheese.png");
 
     Scene scene(graphics, Player(0.2,1.5,graphics->input));
