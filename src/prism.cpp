@@ -101,9 +101,7 @@ void Prism::render() {
     program.loadUniform("scale", glm::mat3(scale));
     program.loadUniform("invModel", invModel);
     tex.bind();
-    glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
 }
 
 Prism::Prism(glm::vec3 p, float r, glm::vec3 a, glm::vec3 d, Texture texture) : Renderable(texture) {

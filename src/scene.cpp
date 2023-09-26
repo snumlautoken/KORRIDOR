@@ -1,6 +1,6 @@
 #include "scene.hpp"
 
-Scene::Scene(std::shared_ptr<Graphics> g, Player p)  : player(p) {
+Scene::Scene(std::shared_ptr<Graphics> g, Player p) : player(p) {
     gr_ptr = g;
 }
 
@@ -20,9 +20,7 @@ void Scene::playerCollision() {
 
 void Scene::render() {
     for (auto l : renderables) {
-        auto sp = l.second.begin()->get()->getProgram();
-        sp.use();
-        sp.loadUniform("view", gr_ptr->input->getView());
+        l.second.begin()->get()->bindClass(gr_ptr->input->getView());
         for (auto e : l.second) {
             e->render();
         }

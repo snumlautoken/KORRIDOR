@@ -35,6 +35,12 @@ public:
         program.loadUniform("lightDir", glm::vec3(1,-1,1));
     };
 
+    void bindClass(const glm::mat4& view) override {
+        program.use();
+        program.loadUniform("view", view);
+        glBindVertexArray(vao);
+    }
+
     bool scaleTex = true;
 
 private:
