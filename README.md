@@ -1,5 +1,7 @@
 # KORRIDOR
 
+[Video Demo](https://www.youtube.com/watch?v=xBvkNm1Suy4)
+
 KORRIDOR is currently in early development, but should be testable in its current state.
 
 To build, simply make sure to have `glfw`, `GLEW` and `glm` installed.
